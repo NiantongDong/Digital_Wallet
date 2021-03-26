@@ -1,0 +1,114 @@
+freertos/libraries/c_sdk/aws/shadow/src/aws_shadow.o \
+ freertos/libraries/c_sdk/aws/shadow/src/aws_shadow.d: \
+ ../freertos/libraries/c_sdk/aws/shadow/src/aws_shadow.c \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/iot_config.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/iot_config_common.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/FreeRTOS.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\ARM_CM4F/FreeRTOSConfig.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/projdefs.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/portable.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/deprecated_definitions.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\portable\GCC\ARM_CM4F/portmacro.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/mpu_wrappers.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\abstractions\platform\freertos\include/platform/iot_platform_types_freertos.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/timers.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/task.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/list.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_clientcredential.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_clientcredential_keys.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_demo_config.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/task.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/semphr.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/queue.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_shadow_config.h \
+ ../freertos/libraries/c_sdk/aws/shadow/src/aws_shadow_config_defaults.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/iot_mqtt_agent_config.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_agent_config_defaults.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\aws\shadow\include/aws_shadow.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_agent.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_lib.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_mqtt_config.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_config_defaults.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include\private/iot_doubly_linked_list.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include\private/iot_lib_init.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\aws\shadow\include/aws_iot_shadow.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\aws\shadow\include/types/aws_iot_shadow_types.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/types/iot_mqtt_types.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\abstractions\platform\include/types/iot_platform_types.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include/iot_linear_containers.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include/types/iot_taskpool_types.h \
+ C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\abstractions\platform\include/platform/iot_network.h
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/iot_config.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/iot_config_common.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/FreeRTOS.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\ARM_CM4F/FreeRTOSConfig.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/projdefs.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/portable.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/deprecated_definitions.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\portable\GCC\ARM_CM4F/portmacro.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/mpu_wrappers.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\abstractions\platform\freertos\include/platform/iot_platform_types_freertos.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/timers.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/task.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/list.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_clientcredential.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_clientcredential_keys.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_demo_config.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/task.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/semphr.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\freertos_kernel\include/queue.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_shadow_config.h:
+
+../freertos/libraries/c_sdk/aws/shadow/src/aws_shadow_config_defaults.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/iot_mqtt_agent_config.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_agent_config_defaults.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\aws\shadow\include/aws_shadow.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_agent.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_lib.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\template\aws/aws_mqtt_config.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/iot_mqtt_config_defaults.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include\private/iot_doubly_linked_list.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include\private/iot_lib_init.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\aws\shadow\include/aws_iot_shadow.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\aws\shadow\include/types/aws_iot_shadow_types.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\mqtt\include/types/iot_mqtt_types.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\abstractions\platform\include/types/iot_platform_types.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include/iot_linear_containers.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\c_sdk\standard\common\include/types/iot_taskpool_types.h:
+
+C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\Wallet_Test\freertos\libraries\abstractions\platform\include/platform/iot_network.h:

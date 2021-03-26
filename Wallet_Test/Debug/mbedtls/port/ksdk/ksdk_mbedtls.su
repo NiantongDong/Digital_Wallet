@@ -1,0 +1,17 @@
+ksdk_mbedtls.c:240:6:CRYPTO_InitHardware	8	static
+ksdk_mbedtls.c:319:5:mbedtls_des_setkey_enc	24	static
+ksdk_mbedtls.c:341:5:mbedtls_des_setkey_dec	24	static
+ksdk_mbedtls.c:364:5:mbedtls_des3_set2key_enc	24	static
+ksdk_mbedtls.c:394:5:mbedtls_des3_set2key_dec	24	static
+ksdk_mbedtls.c:424:5:mbedtls_des3_set3key_enc	24	static
+ksdk_mbedtls.c:449:5:mbedtls_des3_set3key_dec	24	static
+ksdk_mbedtls.c:474:5:mbedtls_des_crypt_ecb	32	static
+ksdk_mbedtls.c:512:5:mbedtls_des3_crypt_ecb	32	static
+ksdk_mbedtls.c:708:5:mbedtls_aes_setkey_enc	32	static
+ksdk_mbedtls.c:778:5:mbedtls_aes_setkey_dec	32	static
+ksdk_mbedtls.c:848:5:mbedtls_internal_aes_encrypt	32	static
+ksdk_mbedtls.c:932:5:mbedtls_internal_aes_decrypt	32	static
+ksdk_mbedtls.c:3593:5:mbedtls_internal_md5_process	24	static
+ksdk_mbedtls.c:3692:5:mbedtls_internal_sha1_process	24	static
+ksdk_mbedtls.c:4197:5:mbedtls_internal_sha256_process	24	static
+ksdk_mbedtls.c:4644:5:mbedtls_hardware_poll	32	static

@@ -1,0 +1,2 @@
+mbedtls_error.c:208:14:mbedtls_strerror_highlevel	24	static
+mbedtls_error.c:861:14:mbedtls_strerror_lowlevel	24	static

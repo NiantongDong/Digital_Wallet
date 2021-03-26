@@ -1,0 +1,7 @@
+iot_pkcs11.c:51:14:prvOpenSession	40	static
+iot_pkcs11.c:73:7:xGetSlotList	32	static
+iot_pkcs11.c:126:7:xInitializePKCS11	40	static
+iot_pkcs11.c:152:7:xInitializePkcs11Token	40	static
+iot_pkcs11.c:224:7:xInitializePkcs11Session	40	static
+iot_pkcs11.c:280:7:xFindObjectWithLabelAndClass	72	static
+iot_pkcs11.c:338:7:vAppendSHA256AlgorithmIdentifierSequence	48	static

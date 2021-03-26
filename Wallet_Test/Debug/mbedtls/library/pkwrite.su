@@ -1,0 +1,11 @@
+pk.h:157:36:mbedtls_pk_rsa	16	static
+pk.h:170:36:mbedtls_pk_ec	16	static
+pkwrite.c:73:12:pk_write_rsa_pubkey	56	static
+pkwrite.c:112:12:pk_write_ec_pubkey	176	static
+pkwrite.c:140:12:pk_write_ec_param	40	static
+pkwrite.c:159:12:pk_write_ec_private	104	static
+pkwrite.c:177:5:mbedtls_pk_write_pubkey	32	static
+pkwrite.c:203:5:mbedtls_pk_write_pubkey_der	56	static
+pkwrite.c:256:5:mbedtls_pk_write_key_der	72	static
+pkwrite.c:499:5:mbedtls_pk_write_pubkey_pem	1112	static
+pkwrite.c:524:5:mbedtls_pk_write_key_pem	2920	static
