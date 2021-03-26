@@ -53,7 +53,7 @@ int main(void) {
 
     /* Disable SYSMPU. */
     base->CESR &= ~SYSMPU_CESR_VLD_MASK;
-    CRYPTO_InitHardware();
+    //CRYPTO_InitHardware();
 
     /* Init board hardware. */
     BOARD_InitBootPins();
@@ -79,6 +79,8 @@ int main(void) {
     	//inputBuffer[strcspn(inputBuffer, "\n")] = '\0';
 
 
+//Add section for probing our public key? To show visitors.
+
     	scanf("%14s", inputBuffer);
     	//printf("String: %s",inputBuffer);
 
@@ -98,19 +100,22 @@ int main(void) {
      * Fix semi-infinite loop when input is more than 1 character. Probably change the scanf() to a fgets(), or find way to sanitise any extra input.
      * Maybe convert from string to int.
      */
-    PRINTF("\nHello World, you made it!\n\n");
+    PRINTF("\nHello World, you made it! \n\n");
 
     while(bodyFlag){
 		PRINTF("What would you like to do?\n"
 				"1    See public key\n"
 				"2    See private key\n"
-				"3    Exit\n");
+				"3    Sign a message\n"		//Same kind of encoding with our private key to send a message out.
+				"4    Read an input message\n"	//When we recieve a message, we decrpyt it using our private key.
+				"5    Exit\n");
 
 		inputBuffer = malloc(bufferSize * sizeof(char));
 
 		PRINTF("Option: ");
 		scanf("%1s", inputBuffer);
 
+//Create a "Hello World" message from wallet (encrypted through our private key) that the world can read with our public key. Validates identity.
 
 		//fgets(inputBuffer, 1, stdin);
 		inputBuffer[strcspn(inputBuffer, "\n")] = 0;
@@ -118,6 +123,10 @@ int main(void) {
 		if (strncmp(inputBuffer, "1",1)==0)
 		{
 			PRINTF("\nEntered public key. Hmmm seems we're missing that part!\n\n");
+		}
+		else if (strncmp(inputBuffer, "2",1)==0)
+		{
+			PRINTF("\nEntered private key. Hmmm seems we're missing that part!\n\n");
 		}
 		else if (strncmp(inputBuffer, "2",1)==0)
 		{
