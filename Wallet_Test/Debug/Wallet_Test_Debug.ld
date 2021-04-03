@@ -6,7 +6,7 @@
  * Generated linker script file for MK64FN1M0xxx12
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.30
- * MCUXpresso IDE v11.3.0 [Build 5222] [2021-01-11] on Apr 3, 2021 11:21:44 AM
+ * MCUXpresso IDE v11.3.0 [Build 5222] [2021-01-11] on Apr 3, 2021 11:44:25 AM
  */
 
 INCLUDE "Wallet_Test_Debug_library.ld"
