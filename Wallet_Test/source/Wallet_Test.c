@@ -33,6 +33,7 @@
  * @brief   Application entry point.
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "board.h"
 #include "peripherals.h"
@@ -47,6 +48,9 @@
 /*
  * @brief   Application entry point.
  */
+char* key_return(FILE *fp);
+
+
 int main(void) {
 
     SYSMPU_Type *base = SYSMPU;
@@ -70,14 +74,15 @@ int main(void) {
     int entranceFlag = 0;
     int bodyFlag = 1;
 
+    /* Keys and file management*/
+    char output_buffer[128];
+
+
+
+
     while(entranceFlag == 0 )
     {
     	PRINTF("Welcome to our WIP Wallet!\nEnter the correct Something and enter: ");
-
-    	//inputBuffer = fgets(inputBuffer, bufferSize, stdin);
-
-    	//inputBuffer[strcspn(inputBuffer, "\n")] = '\0';
-
 
 //Add section for probing our public key? To show visitors.
 
@@ -116,23 +121,47 @@ int main(void) {
 		scanf("%1s", inputBuffer);
 
 //Create a "Hello World" message from wallet (encrypted through our private key) that the world can read with our public key. Validates identity.
-
-		//fgets(inputBuffer, 1, stdin);
 		inputBuffer[strcspn(inputBuffer, "\n")] = 0;
 
 		if (strncmp(inputBuffer, "1",1)==0)
 		{
-			PRINTF("\nEntered public key. Hmmm seems we're missing that part!\n\n");
+			PRINTF("\nEntered public key. \n\n");
+		    //FILE *fp_public = fopen("49742dfdf5-public.pem.key", "r");
+		    FILE *fp_public = fopen("C:/Users/bkute/Documents/MCUXpressoIDE_11.3.0_5222/workspace/Wallet_Test/source/test.txt", "r");
+		     if(fp_public == NULL) {
+		    	 PRINTF("Unable to open file!\n\n");
+		     }
+		     else
+		     {
+				 while(fgets(output_buffer, sizeof(output_buffer), fp_public) != NULL) {
+					 PRINTF("Printing public key\n");
+				 }
+				 fclose(fp_public);
+		     }
 		}
 		else if (strncmp(inputBuffer, "2",1)==0)
 		{
-			PRINTF("\nEntered private key. Hmmm seems we're missing that part!\n\n");
-		}
-		else if (strncmp(inputBuffer, "2",1)==0)
-		{
-			PRINTF("\nEntered private key. Hmmm seems we're missing that part!\n\n");
+			PRINTF("\nEntered private key. \n\n");
+		    //FILE *fp_private = fopen("49742dfdf5-private.pem.key", "r");
+		    FILE *fp_private = fopen("C:/Users/bkute/Documents/MCUXpressoIDE_11.3.0_5222/workspace/Wallet_Test/source/test.txt", "r");
+		    if(fp_private == NULL) {
+		    	 PRINTF("Unable to open file!\n\n");
+		    }
+		    else
+		    {
+				 while(fgets(output_buffer, sizeof(output_buffer), fp_private) != NULL) {
+					 PRINTF("Printing public key\n");
+				 }
+				 fclose(fp_private);
+		    }
 		}
 		else if (strncmp(inputBuffer, "3",1)==0)
+		{
+
+			PRINTF("\nEntered private key:");
+
+		}
+		else if (strncmp(inputBuffer, "4",1)==0)
 		{
 			PRINTF("\nEntered Exit. Goodbye!\n");
 			return 0;
@@ -141,11 +170,7 @@ int main(void) {
 		{
 			PRINTF("\nInvalid Command! Returning for now, but should take you back to menu.\n");
 		}
-		//char *inputBuffer = malloc(bufferSize * sizeof(char));
-		//fflush(stdin);
     }
-//strtoi
-
 
 
 
@@ -159,5 +184,6 @@ int main(void) {
             tight while() loop */
         __asm volatile ("nop");
     }
-    return 0 ;
 }
+
+
