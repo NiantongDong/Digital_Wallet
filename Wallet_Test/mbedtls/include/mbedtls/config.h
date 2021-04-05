@@ -738,7 +738,7 @@
  *
  * A man-in-the-browser attacker can recover authentication tokens sent through
  * a TLS connection using a 3DES based cipher suite (see "On the Practical
- * (In-)Security of 64-bit Block Ciphers" by Karthikeyan Bhargavan and Gaëtan
+ * (In-)Security of 64-bit Block Ciphers" by Karthikeyan Bhargavan and Gaï¿½tan
  * Leurent, see https://sweet32.info/SWEET32_CCS16.pdf). If this attack falls
  * in your threat model or you are unsure, then you should keep this option
  * enabled to remove 3DES based cipher suites.
@@ -1091,7 +1091,7 @@
  * enabled as well):
  *      MBEDTLS_TLS_ECJPAKE_WITH_AES_128_CCM_8
  */
-//#define MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
 
 /**
  * \def MBEDTLS_PK_PARSE_EC_EXTENDED
@@ -1229,7 +1229,7 @@
  *
  * Uncomment this macro to include backtrace information
  */
-//#define MBEDTLS_MEMORY_BACKTRACE
+#define MBEDTLS_MEMORY_BACKTRACE
 
 /**
  * \def MBEDTLS_PK_RSA_ALT_SUPPORT

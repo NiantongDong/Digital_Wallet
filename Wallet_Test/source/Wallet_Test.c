@@ -32,6 +32,13 @@
  * @file    Wallet_Test.c
  * @brief   Application entry point.
  */
+
+/* Encryption Library */
+#include "mbedtls/pk.h"
+#include "mbedtls/entropy.h"
+#include "mbedtls/ctr_drbg.h"
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,14 +48,64 @@
 #include "clock_config.h"
 #include "MK64F12.h"
 #include "fsl_debug_console.h"
-/* TODO: insert other include files here. */
 
-/* TODO: insert other definitions and declarations here. */
+
+
+/* FreeRTOS Libraries */
+#include "FreeRTOS.h"
 
 /*
  * @brief   Application entry point.
  */
 char* key_return(FILE *fp);
+
+
+/* Keys and file management*/
+unsigned char *public_key =
+		/*"-----BEGIN PUBLIC KEY-----"
+		"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv6Dmm3NvbVDz2Nh+wwc+"
+		"YOjGLDSuSu940LMiyIkfOXRPd2AhUjV44MW98eVlDrG885dqBG/Hr0JVKufXAAEi"
+		"4atyf3epluU9gcWbdEHA9dPwnNntMb4L4H8TPMju91nrTHE5uI+Sz9QtwaCTF9Ll"
+		"FotM0+PT+0YVLDjsb8phVg9nPyHUrror6Uy9blAl7JMfUg6T6kflqPZoQuA6L2uk"
+		"T7XO1v+5k8B4g7sRIbwtBfwD7cYZDLDMXFSqJKn9Ilg6lzHKUdQc+wn7WlSqDANf"
+		"qHec4Ph4AxExW4/V7u80XI/mcT+6c0rgna58AvOwPCtzMVAd2hu0eY3DIhhXNYC5"
+		"NwIDAQAB\0"
+		"-----END PUBLIC KEY-----";*/
+
+"-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv6Dmm3NvbVDz2Nh+wwc+YOjGLDSuSu940LMiyIkfOXRPd2AhUjV44MW98eVlDrG885dqBG/Hr0JVKufXAAEi4atyf3epluU9gcWbdEHA9dPwnNntMb4L4H8TPMju91nrTHE5uI+Sz9QtwaCTF9LlFotM0+PT+0YVLDjsb8phVg9nPyHUrror6Uy9blAl7JMfUg6T6kflqPZoQuA6L2ukT7XO1v+5k8B4g7sRIbwtBfwD7cYZDLDMXFSqJKn9Ilg6lzHKUdQc+wn7WlSqDANfqHec4Ph4AxExW4/V7u80XI/mcT+6c0rgna58AvOwPCtzMVAd2hu0eY3DIhhXNYC5NwIDAQAB-----END PUBLIC KEY-----";
+
+
+
+
+unsigned char *private_key =
+		"-----BEGIN RSA PRIVATE KEY-----"
+		"MIIEowIBAAKCAQEAv6Dmm3NvbVDz2Nh+wwc+YOjGLDSuSu940LMiyIkfOXRPd2Ah"
+		"UjV44MW98eVlDrG885dqBG/Hr0JVKufXAAEi4atyf3epluU9gcWbdEHA9dPwnNnt"
+		"Mb4L4H8TPMju91nrTHE5uI+Sz9QtwaCTF9LlFotM0+PT+0YVLDjsb8phVg9nPyHU"
+		"rror6Uy9blAl7JMfUg6T6kflqPZoQuA6L2ukT7XO1v+5k8B4g7sRIbwtBfwD7cYZ"
+		"DLDMXFSqJKn9Ilg6lzHKUdQc+wn7WlSqDANfqHec4Ph4AxExW4/V7u80XI/mcT+6"
+		"c0rgna58AvOwPCtzMVAd2hu0eY3DIhhXNYC5NwIDAQABAoIBAEZCm2rxtzAwl0ex"
+		"kUC2vjNQBaEdq64EAZsboyw9wnoRYDWXxH/c5TYcqpkvj48Esg/qO0/nICLtQkbZ"
+		"/GWfBQgTEYcU+9Q8twGGz4mftj0r+TO5X5N2Z+pnDUmjLqL4kCJV/WDjG2QiGqi8"
+		"1FHO3HoYlxG1nfqqZobxVBdk761ak6Pzbiw74q77RWxjlBEtgLC2E67eDqJKSUdI"
+		"VvkFNile+uY99KjQHkiY0Hn5vx1nLSlIKMi5rRsdE+jYgQGI02/fTkWASp/XJixe"
+		"fNoUGgsTtvPBTJoghqm3A83N11Y8WYv9CPkVBBm6AwHeo6BmJqQ9dzudbHTzaooV"
+		"ZMPLBQkCgYEA7WvwML+44lxJHlJk+OGw1EsV8T57DM6kVrECN/KsnfQKvBA4vbKI"
+		"OVApDzRRVLcLEoArXO33EHGwBl6flOvMM8VSzSEkPBc6BF7I9dMvWDOGJIrKs6Kl"
+		"YLq75ay6/+zhot9peohvdsXsWHWtG49h72SS47DSBmVsvHQFxsIJ2cUCgYEAzp+g"
+		"+J/LH9JDqDt5pO6n7tksTVhv4HH9JCTZ3Jf2RgIfIgUKIsTBUUtsUwQC/aX4Cwuu"
+		"l8KFzyuTdzAziEUaEu+3Dpx3KAYb/XcZ83pp2iTyTP3zuK9VGnIgBbpZvJSL0pJq"
+		"qweGzJBH5mvxmc9GnzUyzt22pW81qvz0M9tfgssCgYBtZ+fvDuorpUssZduRtK6/"
+		"pTofSSN6615fdIIJNhLFVsf7kZ4UDEkp3/6LuxgfaZn4lIdm82F+emUbCk+PWHlp"
+		"Aez+Cd+gsTNTADqqzP5sLpIKFMsDrFd5E5Oyar5hYM85NqpshKKYoOwgd1ml8ZS3"
+		"tCjcM4cU23gX/38J8DCJ4QKBgD5f4fAsDN2mU9ZNXgN0KC3qUX1n3R4cSxbGKR52"
+		"oVmw+kUC0HR+gP1Rj3ngFCcOGzr6Y9JcXpiTxwiL/IJ+mchtpQ08Hpxue7SgZ60g"
+		"nyPDU4H6h8CQ7Vf2a8RO5RgQn8UJfjnzI7ZNN+dPXrfX4rHdFWFtfN2kHMdpZS7i"
+		"YorRAoGBAOzJGmaIAgZoy4dl1wW7cQhtFHUQjn/AXhk3r6HZryfbqTQ2UjIzB9Cp"
+		"4J5cMvACdleZaeDF+UpW1iu2E6aqGD9/zARQrTKrR2L/AHETqQHwKUtubO2b9G2q"
+		"p+gYN2bV4VO9iL1H0TqqUGy/DK9iPAgigeP7/fy+Xa9v+Wy1EhzY"
+		"-----END RSA PRIVATE KEY-----";
+
 
 
 int main(void) {
@@ -67,151 +124,146 @@ int main(void) {
     /* Init FSL debug console. */
     BOARD_InitDebugConsole();
 #endif
-    int bufferSize = 20;
-    char *inputBuffer = malloc(bufferSize * sizeof(char));
+  //  int bufferSize = 20;
+    int ret = 0;
+    //char *inputBuffer = malloc(bufferSize * sizeof(char));
+    unsigned char *message = "Hello World!";
+    size_t message_length = strlen(message);
+
+    PRINTF("Size of message: %zu \n", message_length);
 
     //Flags
-    int entranceFlag = 0;
-    int bodyFlag = 1;
+   // int entranceFlag = 0;
+    //int bodyFlag = 1;
 
     /* Keys and file management*/
-    char output_buffer[128];
+    *public_key++ = '\0';		//\0 added as requirement from pk_parse function: https://tls.mbed.org/api/pk_8h.html#ade680bf8e87df7ccc3bb36b52e43972b
+    							//Commenting this section out allows print statements to continue, but with incorrect string.
 
-    char *public_key =
-    		"-----BEGIN PUBLIC KEY-----"
-    		"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv6Dmm3NvbVDz2Nh+wwc+"
-    		"YOjGLDSuSu940LMiyIkfOXRPd2AhUjV44MW98eVlDrG885dqBG/Hr0JVKufXAAEi"
-    		"4atyf3epluU9gcWbdEHA9dPwnNntMb4L4H8TPMju91nrTHE5uI+Sz9QtwaCTF9Ll"
-    		"FotM0+PT+0YVLDjsb8phVg9nPyHUrror6Uy9blAl7JMfUg6T6kflqPZoQuA6L2uk"
-    		"T7XO1v+5k8B4g7sRIbwtBfwD7cYZDLDMXFSqJKn9Ilg6lzHKUdQc+wn7WlSqDANf"
-    		"qHec4Ph4AxExW4/V7u80XI/mcT+6c0rgna58AvOwPCtzMVAd2hu0eY3DIhhXNYC5"
-    		"NwIDAQAB"
-    		"-----END PUBLIC KEY-----";
+    /* Entropy Initilisation
+     *
+     * https://tls.mbed.org/kb/how-to/add-a-random-generator
+     * */
+    mbedtls_entropy_context entropy;
+    mbedtls_entropy_init( &entropy );
 
-    char *private_key =
-    		"-----BEGIN RSA PRIVATE KEY-----"
-    		"MIIEowIBAAKCAQEAv6Dmm3NvbVDz2Nh+wwc+YOjGLDSuSu940LMiyIkfOXRPd2Ah"
-    		"UjV44MW98eVlDrG885dqBG/Hr0JVKufXAAEi4atyf3epluU9gcWbdEHA9dPwnNnt"
-    		"Mb4L4H8TPMju91nrTHE5uI+Sz9QtwaCTF9LlFotM0+PT+0YVLDjsb8phVg9nPyHU"
-    		"rror6Uy9blAl7JMfUg6T6kflqPZoQuA6L2ukT7XO1v+5k8B4g7sRIbwtBfwD7cYZ"
-    		"DLDMXFSqJKn9Ilg6lzHKUdQc+wn7WlSqDANfqHec4Ph4AxExW4/V7u80XI/mcT+6"
-    		"c0rgna58AvOwPCtzMVAd2hu0eY3DIhhXNYC5NwIDAQABAoIBAEZCm2rxtzAwl0ex"
-    		"kUC2vjNQBaEdq64EAZsboyw9wnoRYDWXxH/c5TYcqpkvj48Esg/qO0/nICLtQkbZ"
-    		"/GWfBQgTEYcU+9Q8twGGz4mftj0r+TO5X5N2Z+pnDUmjLqL4kCJV/WDjG2QiGqi8"
-    		"1FHO3HoYlxG1nfqqZobxVBdk761ak6Pzbiw74q77RWxjlBEtgLC2E67eDqJKSUdI"
-    		"VvkFNile+uY99KjQHkiY0Hn5vx1nLSlIKMi5rRsdE+jYgQGI02/fTkWASp/XJixe"
-    		"fNoUGgsTtvPBTJoghqm3A83N11Y8WYv9CPkVBBm6AwHeo6BmJqQ9dzudbHTzaooV"
-    		"ZMPLBQkCgYEA7WvwML+44lxJHlJk+OGw1EsV8T57DM6kVrECN/KsnfQKvBA4vbKI"
-    		"OVApDzRRVLcLEoArXO33EHGwBl6flOvMM8VSzSEkPBc6BF7I9dMvWDOGJIrKs6Kl"
-    		"YLq75ay6/+zhot9peohvdsXsWHWtG49h72SS47DSBmVsvHQFxsIJ2cUCgYEAzp+g"
-    		"+J/LH9JDqDt5pO6n7tksTVhv4HH9JCTZ3Jf2RgIfIgUKIsTBUUtsUwQC/aX4Cwuu"
-    		"l8KFzyuTdzAziEUaEu+3Dpx3KAYb/XcZ83pp2iTyTP3zuK9VGnIgBbpZvJSL0pJq"
-    		"qweGzJBH5mvxmc9GnzUyzt22pW81qvz0M9tfgssCgYBtZ+fvDuorpUssZduRtK6/"
-    		"pTofSSN6615fdIIJNhLFVsf7kZ4UDEkp3/6LuxgfaZn4lIdm82F+emUbCk+PWHlp"
-    		"Aez+Cd+gsTNTADqqzP5sLpIKFMsDrFd5E5Oyar5hYM85NqpshKKYoOwgd1ml8ZS3"
-    		"tCjcM4cU23gX/38J8DCJ4QKBgD5f4fAsDN2mU9ZNXgN0KC3qUX1n3R4cSxbGKR52"
-    		"oVmw+kUC0HR+gP1Rj3ngFCcOGzr6Y9JcXpiTxwiL/IJ+mchtpQ08Hpxue7SgZ60g"
-    		"nyPDU4H6h8CQ7Vf2a8RO5RgQn8UJfjnzI7ZNN+dPXrfX4rHdFWFtfN2kHMdpZS7i"
-    		"YorRAoGBAOzJGmaIAgZoy4dl1wW7cQhtFHUQjn/AXhk3r6HZryfbqTQ2UjIzB9Cp"
-    		"4J5cMvACdleZaeDF+UpW1iu2E6aqGD9/zARQrTKrR2L/AHETqQHwKUtubO2b9G2q"
-    		"p+gYN2bV4VO9iL1H0TqqUGy/DK9iPAgigeP7/fy+Xa9v+Wy1EhzY"
-    		"-----END RSA PRIVATE KEY-----";
+    /* Creating Random Generator */
 
+    mbedtls_ctr_drbg_context ctr_drbg;
+    char *personalization = "Oh lordy will this work?";
 
-    while(entranceFlag == 0 )
+    mbedtls_ctr_drbg_init( &ctr_drbg );
+
+    ret = mbedtls_ctr_drbg_seed( &ctr_drbg , mbedtls_entropy_func, &entropy,
+                     (const unsigned char *) personalization,
+                     strlen( personalization ) );
+    if( ret != 0 )
     {
-    	PRINTF("Welcome to our WIP Wallet!\nEnter the correct Something and enter: ");
-
-//Add section for probing our public key? To show visitors.
-
-    	scanf("%14s", inputBuffer);
-    	//printf("String: %s",inputBuffer);
-
-    	if (strcmp(inputBuffer, "Something")==0)
-    	{
-    		entranceFlag = 1;
-    	}
-    	else
-    	{
-    		PRINTF("Wrong! Try again.\n\n");
-    	}
+        return -1;
     }
 
-//Make menu print into function.
+    /* RSA Initialization */
+
+
+    mbedtls_pk_context pk;				//Getting hardfault here?
+    mbedtls_pk_init( &pk );
+
+    PRINTF("Before public key parse:\n");
+    /* Reading RSA Public Key */
+    //if( ( ret = mbedtls_pk_parse_public_keyfile(&pk, "49742dfdf5-public.pem.key")) != 0 ) This is a wrapper for the below function. IO isn't working, so using hard coded string.
+    if( ( ret = mbedtls_pk_parse_public_key(&pk, public_key,strlen(public_key)+1)) != 0 )
+    {
+        printf( " failed\n  ! mbedtls_pk_parse_public_keyfile returned -0x%04x\n", -ret );
+        return -1;
+    }
+    PRINTF("After public key parse:\n");
+
+/* RSA Encryption
+ *
+ *
+ *  The result is in buf, with the actual size you should copy out in olen.
+ * */
+    unsigned char buf[MBEDTLS_MPI_MAX_SIZE];
+    size_t olen = 0;
+
     /*
-     * NEED TO DO
-     * Fix semi-infinite loop when input is more than 1 character. Probably change the scanf() to a fgets(), or find way to sanitise any extra input.
-     * Maybe convert from string to int.
+     * Calculate the RSA encryption of the data.
      */
-    PRINTF("\nHello World, you made it! \n\n");
+    printf( "\n  . Generating the encrypted value" );
+    fflush( stdout );
 
-    while(bodyFlag){
-		PRINTF("What would you like to do?\n"
-				"1    See public key\n"
-				"2    See private key\n"
-				"3    Sign a message\n"		//Same kind of encoding with our private key to send a message out.
-				"4    Read an input message\n"	//When we recieve a message, we decrpyt it using our private key.
-				"5    Exit\n");
-
-		inputBuffer = malloc(bufferSize * sizeof(char));
-
-		PRINTF("Option: ");
-		scanf("%1s", inputBuffer);
-
-//Create a "Hello World" message from wallet (encrypted through our private key) that the world can read with our public key. Validates identity.
-		inputBuffer[strcspn(inputBuffer, "\n")] = 0;
-
-		if (strncmp(inputBuffer, "1",1)==0)
-		{
-			PRINTF("\nEntered public key. \n\n");
-		    //FILE *fp_public = fopen("49742dfdf5-public.pem.key", "r");
-		    FILE *fp_public = fopen("./test.txt", "r");
-		     if(fp_public == NULL) {
-		    	 PRINTF("Unable to open file!\nUsing hard-coded value for now:\n%s\n\n",public_key);
-		     }
-		     else
-		     {
-				 while(fgets(output_buffer, sizeof(output_buffer), fp_public) != NULL) {
-					 PRINTF("Printing public key\n");
-				 }
-				 fclose(fp_public);
-		     }
-		}
-		else if (strncmp(inputBuffer, "2",1)==0)
-		{
-			PRINTF("\nEntered private key. \n\n");
-		    //FILE *fp_private = fopen("49742dfdf5-private.pem.key", "r");
-		    FILE *fp_private = fopen("./test.txt", "r");
-		    if(fp_private == NULL) {
-		    	 PRINTF("Unable to open file!\nUsing hard-coded value for now:\n%s\n\n",private_key);
-		    }
-		    else
-		    {
-				 while(fgets(output_buffer, sizeof(output_buffer), fp_private) != NULL) {
-					 PRINTF("Printing public key\n");
-				 }
-				 fclose(fp_private);
-		    }
-		}
-		else if (strncmp(inputBuffer, "3",1)==0)
-		{
-
-			PRINTF("\nEntered private key:");
-
-		}
-		else if (strncmp(inputBuffer, "4",1)==0)
-		{
-			PRINTF("\nEntered Exit. Goodbye!\n");
-			return 0;
-		}
-		else
-		{
-			PRINTF("\nInvalid Command! Returning for now, but should take you back to menu.\n");
-		}
+    if( ( ret = mbedtls_pk_encrypt( &pk, message, message_length,
+                                    buf, &olen, sizeof(buf),
+                                    mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+    {
+        printf( " failed\n  ! mbedtls_pk_encrypt returned -0x%04x\n", -ret );
+        return -1;
     }
+    printf( "\nEncrypted Message:\n%s\n",buf );
 
-
-
+//
+///* Body loop for menu */
+//
+//    while(entranceFlag == 0 )
+//    {
+//    	PRINTF("Welcome to our WIP Wallet!\nEnter the correct Something and enter: ");
+//
+//
+//    	scanf("%14s", inputBuffer);
+//
+//    	if (strcmp(inputBuffer, "Something")==0)
+//    	{
+//    		entranceFlag = 1;
+//    	}
+//    	else
+//    	{
+//    		PRINTF("Wrong! Try again.\n\n");
+//    	}
+//    }
+//
+//
+//    PRINTF("\nHello World, you made it! \n\n");
+//
+//    while(bodyFlag){
+//		PRINTF("What would you like to do?\n"
+//				"1    See public key\n"
+//				"2    See private key\n"
+//				"3    Sign a message\n"		//Same kind of encoding with our private key to send a message out.
+//				"4    Read an input message\n"	//When we recieve a message, we decrpyt it using our private key.
+//				"5    Exit\n");
+//
+//		inputBuffer = malloc(bufferSize * sizeof(char));
+//
+//		PRINTF("Option: ");
+//		scanf("%1s", inputBuffer);
+//
+//
+//		if (strncmp(inputBuffer, "1",1)==0)
+//		{
+//			PRINTF("\nEntered public key. \n\n");
+//		}
+//		else if (strncmp(inputBuffer, "2",1)==0)
+//		{
+//			PRINTF("\nEntered private key. \n\n");
+//		}
+//		else if (strncmp(inputBuffer, "3",1)==0)
+//		{
+//			PRINTF("\nEntered private key:");
+//
+//		}
+//		else if (strncmp(inputBuffer, "5",1)==0)
+//		{
+//			PRINTF("\nEntered Exit. Goodbye!\n");
+//			return 0;
+//		}
+//		else
+//		{
+//			PRINTF("\nInvalid Command! Returning for now, but should take you back to menu.\n");
+//		}
+//    }
+//
+//
+//
 
     /* Force the counter to be placed into memory. */
     volatile static int i = 0 ;
