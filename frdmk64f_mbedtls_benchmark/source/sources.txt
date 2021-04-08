@@ -1,0 +1,4 @@
+https://tls.mbed.org/discussions/generic/parsing-public-key-from-memory
+
+https://tls.mbed.org/kb/how-to/encrypt-and-decrypt-with-rsa
+
