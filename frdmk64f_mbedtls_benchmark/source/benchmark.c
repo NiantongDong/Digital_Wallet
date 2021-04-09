@@ -469,15 +469,15 @@ static int bench_print_features(void)
 
 /* Keys and file management*/
 unsigned char *public_key =
-		"-----BEGIN PUBLIC KEY-----\n"
-		"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp0Jb2UNeN0FNyFNWbqzo\n"
-		"XHEyZ3BSRv0XyHwS1pmQwiIcLCo6goOv6RRutJOUee9A47pv8BDUniCV4rL6gL9n\n"
-		"Up/lGBwocqkwcON9lOEQq3U53VDlm+/eY5OsBo0AfoXYugA1wj0snlCfxImtcd2J\n"
-		"8MML+4vdScO90fD8Lakkjh+Ak0xhhw70QGRzsSMgkH1XJzEf0GLg3e5SDvRvXrbM\n"
-		"co8ELGFB9NhVdjoBwfeAw+lhnudXaaAfhX3lyhg3Ssy0yivFei82p4FT4as8E+NB\n"
-		"AQ2p+CDJSTb2GFDD3Aa4djFkPpIHWhNZNrXpl7Zl3v0Pgccwzl5GUQfLMzSGkUNk\n"
-		"CQIDAQAB\n"
-		"-----END PUBLIC KEY-----\n\0";
+	"-----BEGIN PUBLIC KEY-----\n"
+	"MIIBITANBgkqhkiG9w0BAQEFAAOCAQ4AMIIBCQKCAQBZNL64AcOuPy8hcR7nTTvH\n"
+	"IVWHElEJz56XM3B34MqdHwcKZ/N6+7+Ya9GZu5xxi3uFhHdvBhSgs+N6hIzVFHa5\n"
+	"sUwtkbVR+aSHHCYVD1QxEJHJKm2DlduxffDotIlMjK2KLj3jVok/X481YBC0rTQY\n"
+	"vExV4sXXeQZDuYB5Mrca1YmmspwSq1WogPbrZXHavdJYR6btyPH1t4VnpBoRyYiJ\n"
+	"kNWYbDbEJDAWcsl0qILPHzGjuZvmgk/UPyckBBvePd1cbtZlvTX0S0+HhvtjoKBR\n"
+	"t958cekklpOXGgM5BDHgBnIoExXHKs32uu44UanlcUyteIfsGpkWlcG6KHAVLMGF\n"
+	"AgMBAAE=\n"
+	"-----END PUBLIC KEY-----\n\0";
 
 //MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp0Jb2UNeN0FNyFNWbqzoXHEyZ3BSRv0XyHwS1pmQwiIcLCo6goOv6RRutJOUee9A47pv8BDUniCV4rL6gL9nUp/lGBwocqkwcON9lOEQq3U53VDlm+/eY5OsBo0AfoXYugA1wj0snlCfxImtcd2J8MML+4vdScO90fD8Lakkjh+Ak0xhhw70QGRzsSMgkH1XJzEf0GLg3e5SDvRvXrbMco8ELGFB9NhVdjoBwfeAw+lhnudXaaAfhX3lyhg3Ssy0yivFei82p4FT4as8E+NBAQ2p+CDJSTb2GFDD3Aa4djFkPpIHWhNZNrXpl7Zl3v0Pgccwzl5GUQfLMzSGkUNkCQIDAQAB
 
@@ -485,31 +485,31 @@ unsigned char *public_key =
 
 unsigned char *private_key =
 		"-----BEGIN RSA PRIVATE KEY-----\n"
-		"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\n"
+		"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\n"
 		"-----END RSA PRIVATE KEY-----\n\0";
 
 /* Mbedtls context creation and init */
@@ -543,7 +543,7 @@ int main( int argc, char *argv[] )
 
     /* Main Section */
     int ret = 0;
-    unsigned char *message = "This message was sent from Ben, with an public key ending in: ...CQIDAQAB";
+    unsigned char *message = "Hello World!";
     char *personalization = "oh lord let this work";
     char *new_message = "Hello World again!\n";
     size_t message_length = strlen(message);
@@ -590,6 +590,8 @@ int main( int argc, char *argv[] )
 	    return -1;
 	}
 
+	PRINTF("Message to be signed: %s\n", message);
+
 /* Loading the keys into pk_ */
 	if( ( ret = mbedtls_pk_parse_public_key(&pk_public, public_key,strlen(public_key)+1)) != 0 )
 	{
@@ -603,7 +605,7 @@ int main( int argc, char *argv[] )
 		return -1;
 	}
 
-	//PRINTF("Final output signfer pre work: %s\n",sign);
+	PRINTF("Done loading keys!\n");
 
 /* Signing our message, with no hashing. We want anyone with public key to read contents. */
 	fflush( stdout );
@@ -615,14 +617,17 @@ int main( int argc, char *argv[] )
         goto exit;
     }
 
+    PRINTF("olen: %d bytes written\nSig Leng: %d\n",olen, strlen(sign));
+
 /* Base64 encoding of signed message */
+    fflush( stdout );
 	if( ( ret = mbedtls_base64_encode( signed_base64_encoded, 2048, &olen,sign,strlen(sign)) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
 		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
 		return -1;
 	}
 
-	PRINTF( "\n\nolen length before base64 = %d\nsign length= %d\nsign Contents: %s\n\n\nBase64 Conversion: %s\n",olen,strlen(sign),sign,signed_base64_encoded);
+	PRINTF( "\n\nolen length before base64 = %d\nsign length= %d\nsign Contents: \n%s\n\nBase64 Conversion: \n%s\n\n",olen,strlen(sign),sign,signed_base64_encoded);
 
 /* Base64 decoding for later verification */
 	fflush( stdout );
@@ -634,12 +639,11 @@ int main( int argc, char *argv[] )
 
 	PRINTF("Decoded string using our public key: \n%s\n",signed_base64_decoded);
 
-/* Verification using our public key */
-
-	//fflush( stdout );
-	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_NONE,signed_base64_decoded,strlen(signed_base64_decoded),message,strlen(message)) ) != 0 )	//Isn't this size too big for RSA2048?
+/* Verification using our public key */			//mbedtls_pk_verify_ext
+	fflush( stdout );
+	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_NONE,message,strlen(message),signed_base64_decoded,strlen(signed_base64_decoded)) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
-		PRINTF( " \nfailed\nOlen = %d\nmbedtls_pk_verify returned -0x%04x\n", olen,-ret );
+		PRINTF( " \nfailed\nOlen = %d\nHash Length: %d\nSig Length: %d\n\nmbedtls_pk_verify returned -0x%04x\n", olen,strlen(message),strlen(signed_base64_decoded),-ret );
 		return -1;
 	}
 
