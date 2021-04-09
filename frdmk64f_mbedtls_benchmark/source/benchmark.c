@@ -34,6 +34,7 @@
 #include "mbedtls/ctr_drbg.h"
 #include "fsl_rnga.h"
 #include <mbedtls/base64.h>
+#include "mbedtls/md.h"
 #include "mbedtls/entropy.h"
 
 #if defined(MBEDTLS_PLATFORM_C)
@@ -124,8 +125,8 @@ int main(void)
 
 #include "mbedtls/error.h"
 
-#if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
-#include "mbedtls/memory_buffer_alloc.h"
+#if defined(MBEDTLS_MEMORY_signFER_ALLOC_C)
+#include "mbedtls/memory_signfer_alloc.h"
 #endif
 
 #include "fsl_device_registers.h"
@@ -143,11 +144,11 @@ int main(void)
 #define MEM_BLOCK_OVERHEAD  ( 2 * sizeof( size_t ) )
 
 /*
- * Size to use for the alloc buffer if MEMORY_BUFFER_ALLOC_C is defined.
+ * Size to use for the alloc signfer if MEMORY_signFER_ALLOC_C is defined.
  */
 #define HEAP_SIZE       (1u << 16)  // 64k
 
-#define BUFSIZE         1024
+#define signSIZE         1024
 #define HEADER_FORMAT   "  %-24s :  "
 #define TITLE_LEN       25
 
@@ -199,21 +200,21 @@ int main(void)
         else                                                                                             \
         {                                                                                                \
             mbedtls_printf("%6.2f KB/s,  %6.2f cycles/byte\r\n",                                         \
-                           (ii * BUFSIZE / 1024) / (((float)(tsc2 - tsc1)) / CLOCK_GetCoreSysClkFreq()), \
-                           (((float)(benchmark_mbedtls_timing_hardclock() - tsc2)) / (jj * BUFSIZE)));   \
+                           (ii * signSIZE / 1024) / (((float)(tsc2 - tsc1)) / CLOCK_GetCoreSysClkFreq()), \
+                           (((float)(benchmark_mbedtls_timing_hardclock() - tsc2)) / (jj * signSIZE)));   \
         }                                                                                                \
     } while (0)
 
-#if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C) && defined(MBEDTLS_MEMORY_DEBUG)
+#if defined(MBEDTLS_MEMORY_signFER_ALLOC_C) && defined(MBEDTLS_MEMORY_DEBUG)
 
 #define MEMORY_MEASURE_INIT                                             \
     size_t max_used, max_blocks, max_bytes;                             \
     size_t prv_used, prv_blocks;                                        \
-    mbedtls_memory_buffer_alloc_cur_get( &prv_used, &prv_blocks );      \
-    mbedtls_memory_buffer_alloc_max_reset( );
+    mbedtls_memory_signfer_alloc_cur_get( &prv_used, &prv_blocks );      \
+    mbedtls_memory_signfer_alloc_max_reset( );
 
 #define MEMORY_MEASURE_PRINT( title_len )                               \
-    mbedtls_memory_buffer_alloc_max_get( &max_used, &max_blocks );      \
+    mbedtls_memory_signfer_alloc_max_get( &max_used, &max_blocks );      \
     for( ii = 12 - (title_len); ii != 0; ii-- ) mbedtls_printf( " " );  \
     max_used -= prv_used;                                               \
     max_blocks -= prv_blocks;                                           \
@@ -312,7 +313,7 @@ void ecp_clear_precomputed( mbedtls_ecp_group *grp )
 #define ecp_clear_precomputed( g )
 #endif
 
-unsigned char buf[BUFSIZE];
+unsigned char sign[signSIZE];
 
 typedef struct {
     char md4, md5, ripemd160, sha1, sha256, sha512,
@@ -478,7 +479,7 @@ unsigned char *public_key =
 		"CQIDAQAB\n"
 		"-----END PUBLIC KEY-----\n\0";
 
-//What's the correct format??
+//MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp0Jb2UNeN0FNyFNWbqzoXHEyZ3BSRv0XyHwS1pmQwiIcLCo6goOv6RRutJOUee9A47pv8BDUniCV4rL6gL9nUp/lGBwocqkwcON9lOEQq3U53VDlm+/eY5OsBo0AfoXYugA1wj0snlCfxImtcd2J8MML+4vdScO90fD8Lakkjh+Ak0xhhw70QGRzsSMgkH1XJzEf0GLg3e5SDvRvXrbMco8ELGFB9NhVdjoBwfeAw+lhnudXaaAfhX3lyhg3Ssy0yivFei82p4FT4as8E+NBAQ2p+CDJSTb2GFDD3Aa4djFkPpIHWhNZNrXpl7Zl3v0Pgccwzl5GUQfLMzSGkUNkCQIDAQAB
 
 
 
@@ -513,8 +514,9 @@ unsigned char *private_key =
 
 /* Mbedtls context creation and init */
 static mbedtls_ctr_drbg_context ctr_drbg;
-static mbedtls_pk_context pk;
-mbedtls_entropy_context entropy;
+static mbedtls_pk_context pk_public;
+static mbedtls_pk_context pk_private;
+static mbedtls_entropy_context entropy;
 
 int main( int argc, char *argv[] )
 {
@@ -522,8 +524,8 @@ int main( int argc, char *argv[] )
     unsigned char tmp[200];
     char title[TITLE_LEN];
     todo_list todo;
-#if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
-    unsigned char alloc_buf[HEAP_SIZE] = { 0 };
+#if defined(MBEDTLS_MEMORY_signFER_ALLOC_C)
+    unsigned char alloc_sign[HEAP_SIZE] = { 0 };
 #endif
 
 #if defined(FREESCALE_KSDK_BM)
@@ -541,20 +543,45 @@ int main( int argc, char *argv[] )
 
     /* Main Section */
     int ret = 0;
-    unsigned char *message = "Hello World!";
+    unsigned char *message = "This message was sent from Ben, with an public key ending in: ...CQIDAQAB";
+    char *personalization = "oh lord let this work";
+    char *new_message = "Hello World again!\n";
     size_t message_length = strlen(message);
-    PRINTF("Size of message: %d \r\n", message_length);
+
+	unsigned char sign[2048]="\0";
+	unsigned char sign_base64_encoded[2048]="\0";
+	unsigned char sign_base64_decoded[2048]="\0";
+	unsigned char signed_base64_encoded[2048]="\0";				/* Explicit encoded & decoded variables to show real life process, instead of just passing through original signfer */
+	unsigned char signed_base64_decoded[2048]="\0";
+	size_t olen = 0, olen_base64 = 0;
 
 	mbedtls_ctr_drbg_init( &ctr_drbg );
-	mbedtls_pk_init( &pk );
+	mbedtls_pk_init( &pk_public );
+	mbedtls_pk_init( &pk_private );
 	mbedtls_entropy_init( &entropy );
 
-    /* Randomness, needed for encryption module??? */
-	mbedtls_ctr_drbg_context ctr_drbg;
-	char *personalization = "oh lord let this work";
+/* Testing base64 conversions */
+	//TO DO: Move base 64 higher up for validation. Get base64 encrypted message, then run lab3.
+	if( ( ret = mbedtls_base64_encode( sign_base64_encoded, 2048, &olen,new_message,strlen(new_message)) ) != 0 )	//Isn't this size too big for RSA2048?
+	{
+		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
+		return -1;
+	}
 
-	mbedtls_ctr_drbg_init( &ctr_drbg );
 
+	PRINTF( "\nRet=%d\nolen=%d\nBase64 Encoded Message:\n%s\n",ret,olen,sign_base64_encoded);
+
+	fflush( stdout );
+
+	if( ( ret = mbedtls_base64_decode( sign_base64_decoded, 2048, &olen,sign_base64_encoded,strlen(sign_base64_encoded)) ) != 0 )	//Isn't this size too big for RSA2048?
+	{
+		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
+		return -1;
+	}
+
+	PRINTF( "\nRet=%d\nolen=%d\nBase64 Decoded Message:\n%s\n",ret,olen,sign_base64_decoded);
+
+/* Setting Randomness Generator */
 	ret = mbedtls_ctr_drbg_seed( &ctr_drbg , mbedtls_entropy_func, &entropy,
 	                 (const unsigned char *) personalization,
 	                 strlen( personalization ) );
@@ -563,48 +590,101 @@ int main( int argc, char *argv[] )
 	    return -1;
 	}
 
-	PRINTF("Public Key: %s\n", private_key);
-
-    PRINTF("Before public key parse:\n");
-	if( ( ret = mbedtls_pk_parse_key(&pk, private_key,strlen(private_key)+1,NULL,NULL)) != 0 )
-	//if( ( ret = mbedtls_pk_parse_keyfile(&pk, private_key, NULL)) != 0 )		//Enabled via MBEDTLS_FS_IO in ksdk_mbedtls_config.h. Turning this on causes issues in x509_crt.c. Issues because of file navigation impossibilities on K64F?
+/* Loading the keys into pk_ */
+	if( ( ret = mbedtls_pk_parse_public_key(&pk_public, public_key,strlen(public_key)+1)) != 0 )
 	{
-		PRINTF( " failed\n  ! mbedtls_pk_parse_public_keyfile returned -0x%04x\n", -ret );
+		PRINTF( " failed\n  ! mbedtls_pk_parse_public_keyfile (public key) returned -0x%04x\n", -ret );
 		return -1;
 	}
-	PRINTF("After public key parse:\n");
 
-	unsigned char buf[MBEDTLS_MPI_MAX_SIZE];
-	unsigned char buf_base64[2000];				//Max size
-	size_t olen = 0;
+	if( ( ret = mbedtls_pk_parse_key(&pk_private, private_key,strlen(private_key)+1,NULL,42)) != 0 )		/* But what's the question? */
+	{
+		PRINTF( " failed\n  ! mbedtls_pk_parse_key (private key) returned -0x%04x\n", -ret );
+		return -1;
+	}
 
-	/* Calculate the RSA encryption of the data. */
-	PRINTF( "\n  . Generating the encrypted value" );
+	//PRINTF("Final output signfer pre work: %s\n",sign);
+
+/* Signing our message, with no hashing. We want anyone with public key to read contents. */
+	fflush( stdout );
+
+    if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_NONE , message, strlen(message), sign, &olen,
+                         mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+    {
+    	PRINTF( " failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret );
+        goto exit;
+    }
+
+/* Base64 encoding of signed message */
+	if( ( ret = mbedtls_base64_encode( signed_base64_encoded, 2048, &olen,sign,strlen(sign)) ) != 0 )	//Isn't this size too big for RSA2048?
+	{
+		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
+		return -1;
+	}
+
+	PRINTF( "\n\nolen length before base64 = %d\nsign length= %d\nsign Contents: %s\n\n\nBase64 Conversion: %s\n",olen,strlen(sign),sign,signed_base64_encoded);
+
+/* Base64 decoding for later verification */
+	fflush( stdout );
+	if( ( ret = mbedtls_base64_decode( signed_base64_decoded, 2048, &olen,signed_base64_encoded,strlen(signed_base64_encoded)) ) != 0 )	//Isn't this size too big for RSA2048?
+	{
+		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_decode returned -0x%04x\n", olen,-ret );
+		return -1;
+	}
+
+	PRINTF("Decoded string using our public key: \n%s\n",signed_base64_decoded);
+
+/* Verification using our public key */
+
 	//fflush( stdout );
-
-	if( ( ret = mbedtls_pk_encrypt( &pk, message, message_length,
-									buf, &olen, sizeof(buf),
-									mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_NONE,signed_base64_decoded,strlen(signed_base64_decoded),message,strlen(message)) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
-		PRINTF( " failed\n  ! mbedtls_pk_encrypt returned -0x%04x\n", -ret );
-		return -1;
-	}
-
-	PRINTF( "\n\nEncrypted Message:\n%s\n",buf);
-
-	if( ( ret = mbedtls_base64_encode( buf_base64, 0,&olen,buf,strlen(buf)) ) != 0 )
-	{
-		PRINTF( " \nfailed  ! mbedtls_base64_encode returned -0x%04x\n", -ret );
+		PRINTF( " \nfailed\nOlen = %d\nmbedtls_pk_verify returned -0x%04x\n", olen,-ret );
 		return -1;
 	}
 
 
-	PRINTF( "\nBase64 Message:\n%s\n",buf);
-
-	//TO DO: CONVERT TO BASE64
-
-
+exit:
+	mbedtls_ctr_drbg_free(&ctr_drbg);
+	mbedtls_entropy_free(&entropy);
+	mbedtls_pk_free(&pk_public);
+	mbedtls_pk_free(&pk_private);
+	PRINTF("Goodbye world!\n");
 	return 0;
 }
 
 #endif /* MBEDTLS_TIMING_C */
+
+	/* Ben's spooky code graveyard, because he's a hoarder */
+
+/*	if( ( ret = mbedtls_pk_encrypt( &pk_public, message, strlen(message),
+									sign, &olen, sizeof(sign),
+									mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+	{
+		PRINTF( " failed\n  ! mbedtls_pk_encrypt returned -0x%04x\n", -ret );
+		return -1;
+	}*/
+/* Base64 conversion of binary encrypted string */
+/*	if( ( ret = mbedtls_base64_encode( encrypt_base64, 2048,&olen_base64,sign,olen) ) != 0 )	//Isn't this size too big for RSA2048?
+	{
+		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
+		return -1;
+	}
+
+	PRINTF( "\nRet=%d\nolen_base64=%d\nBase64 Message:\n%s\n",ret,olen_base64,encrypt_base64);*/
+
+/* Decrypting Message! */
+/*
+
+	unsigned char decrypted_message[2048];
+
+	if( ( ret = mbedtls_pk_decrypt( &pk_private, sign, strlen(sign), decrypted_message, &olen, sizeof(decrypted_message),
+	                                mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+	{
+	    printf( "failed   mbedtls_pk_decrypt returned -0x%04x\n", -ret );
+	    return -1;
+	}
+
+	PRINTF("Decrypted Message: %s\n",decrypted_message);*/
+
+
