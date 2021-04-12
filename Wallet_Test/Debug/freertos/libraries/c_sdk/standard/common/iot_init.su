@@ -1,2 +1,0 @@
-iot_init.c:71:6:IotSdk_Init	48	static
-iot_init.c:135:6:IotSdk_Cleanup	16	static

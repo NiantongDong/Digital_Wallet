@@ -1,8 +1,0 @@
-iot_demo_freertos.c:85:17:_getConnectedNetworkForDemo	24	static
-iot_demo_freertos.c:111:17:_waitForDemoNetworkConnection	16	static
-iot_demo_freertos.c:120:13:_onNetworkStateChangeCallback	64	static
-iot_demo_freertos.c:201:12:_initialize	32	static
-iot_demo_freertos.c:298:13:_cleanup	8	static
-iot_demo_freertos.c:310:6:runDemoTask	56	static
-iot_demo_freertos.c:433:10:vApplicationMallocFailedHook	16	static
-iot_demo_freertos.c:457:10:vApplicationStackOverflowHook	24	static
