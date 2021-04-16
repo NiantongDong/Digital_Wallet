@@ -548,11 +548,24 @@ int main( int argc, char *argv[] )
     char *new_message = "Hello World again!\n";
     size_t message_length = strlen(message);
 
+   /*
 	unsigned char sign[2048]="\0";
 	unsigned char sign_base64_encoded[2048]="\0";
 	unsigned char sign_base64_decoded[2048]="\0";
-	unsigned char signed_base64_encoded[2048]="\0";				/* Explicit encoded & decoded variables to show real life process, instead of just passing through original signfer */
+	unsigned char signed_base64_encoded[2048]="\0";
 	unsigned char signed_base64_decoded[2048]="\0";
+	unsigned char hash_sign[32]="\0";
+	unsigned char hash_message[32]="\0";
+  */
+
+	unsigned char *sign = calloc(2048,sizeof(unsigned char));
+	unsigned char *sign_base64_encoded = calloc(2048,sizeof(unsigned char));
+	unsigned char *sign_base64_decoded = calloc(2048,sizeof(unsigned char));
+	unsigned char *signed_base64_encoded = calloc(2048,sizeof(unsigned char));
+	unsigned char *signed_base64_decoded = calloc(2048,sizeof(unsigned char));
+	unsigned char *hash_sign = calloc(32,sizeof(unsigned char));
+	unsigned char *hash_message = calloc(32,sizeof(unsigned char));
+
 	size_t olen = 0, olen_base64 = 0;
 
 	mbedtls_ctr_drbg_init( &ctr_drbg );
@@ -561,7 +574,6 @@ int main( int argc, char *argv[] )
 	mbedtls_entropy_init( &entropy );
 
 /* Testing base64 conversions */
-	//TO DO: Move base 64 higher up for validation. Get base64 encrypted message, then run lab3.
 	if( ( ret = mbedtls_base64_encode( sign_base64_encoded, 2048, &olen,new_message,strlen(new_message)) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
 		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
@@ -607,15 +619,29 @@ int main( int argc, char *argv[] )
 
 	PRINTF("Done loading keys!\n");
 
+/* Hashing our message, to be later verified */
+	PRINTF("Start Hashing: \n");
+	mbedtls_sha256_ret(message, strlen(message), hash_message, 0);
+	PRINTF("olen after hashing: %d\n",olen);
+
 /* Signing our message, with no hashing. We want anyone with public key to read contents. */
 	fflush( stdout );
-
-    if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_NONE , message, strlen(message), sign, &olen,
+	olen = 0;
+    if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_SHA256, hash_message, 0, sign, &olen,				//SIG LENGTH isn't correct? Should be 256 but is 186
                          mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
     {
     	PRINTF( " failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret );
         goto exit;
     }
+
+    /*
+     *     if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_NONE , message, strlen(message), sign, &olen,
+                         mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+    {
+    	PRINTF( " failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret );
+        goto exit;
+    }
+     */
 
     PRINTF("olen: %d bytes written\nSig Leng: %d\n",olen, strlen(sign));
 
@@ -637,18 +663,27 @@ int main( int argc, char *argv[] )
 		return -1;
 	}
 
-	PRINTF("Decoded string using our public key: \n%s\n",signed_base64_decoded);
+	PRINTF("Decoded string: \n%s\n",signed_base64_decoded);
 
 /* Verification using our public key */			//mbedtls_pk_verify_ext
 	fflush( stdout );
-	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_NONE,message,strlen(message),signed_base64_decoded,strlen(signed_base64_decoded)) ) != 0 )	//Isn't this size too big for RSA2048?
+	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_SHA256,hash_message,0,signed_base64_decoded,strlen(signed_base64_decoded)) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
-		PRINTF( " \nfailed\nOlen = %d\nHash Length: %d\nSig Length: %d\n\nmbedtls_pk_verify returned -0x%04x\n", olen,strlen(message),strlen(signed_base64_decoded),-ret );
+		PRINTF( " \nfailed\nOlen = %d\nHash Length: %d\nSig Length: %d\n\nmbedtls_pk_verify returned -0x%04x\n", olen,strlen(hash_message),strlen(signed_base64_decoded),-ret );
 		return -1;
 	}
 
 
 exit:
+	/* Freeing Dynamic Arrays */
+	free(sign);
+	free(sign_base64_encoded);
+	free(sign_base64_decoded);
+	free(signed_base64_encoded);
+	free(signed_base64_decoded);
+	free(hash_sign);
+	free(hash_message);
+
 	mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_entropy_free(&entropy);
 	mbedtls_pk_free(&pk_public);
