@@ -512,6 +512,11 @@ unsigned char *private_key =
 		"j8wLPRcGl4FbzmYLGhvJKZ2IJvKBeh54JHSEna0eFAKzphYLcw==\n"
 		"-----END RSA PRIVATE KEY-----\n\0";
 
+/* Variables for the BTC transaction */
+unsigned char *BTC_address = "1E1Lj9qNoi3RQ6DJqEHP5QxsiZc8wUjtNq";
+unsigned char *BTC_secret_key = "L4N7eFNBnW7n25pp2kx8Jv321baQ2z4g1TAjWnhfC14saBMoTgTw";
+unsigned char *BTC_transaction_id = "Fill me in!";
+
 /* Mbedtls context creation and init */
 static mbedtls_ctr_drbg_context ctr_drbg;
 static mbedtls_pk_context pk_public;
@@ -542,29 +547,32 @@ int main( int argc, char *argv[] )
     bench_print_features();
 
     /* Main Section */
-    int ret = 0;
+    int ret = 0,v = 1;
     unsigned char *message = "Hello World!";
-    char *personalization = "oh lord let this work";
-    char *new_message = "Hello World again!\n";
+    const char *personalization = "oh lord let this work";
+    unsigned char *new_message = "Hello World again!\n";
     size_t message_length = strlen(message);
 
-   /*
-	unsigned char sign[2048]="\0";
-	unsigned char sign_base64_encoded[2048]="\0";
-	unsigned char sign_base64_decoded[2048]="\0";
-	unsigned char signed_base64_encoded[2048]="\0";
-	unsigned char signed_base64_decoded[2048]="\0";
-	unsigned char hash_sign[32]="\0";
-	unsigned char hash_message[32]="\0";
-  */
+    unsigned char *test_message = "LGFErzqw+rC6O2zN3RNy79+eVVQ/NdAkq4tPbsvDHEaPPJcnIE1GSAoiEJ7Ppey5727SJRg7CGn4Zr6XBqRd5a6egINn3NGnKzuYnKurgnBKJukmoDXsA05Kevz4egXiLVVEOBg3e0BYWqmILGtk0BvLjv8RomiRktwChwiv25bocoLQ4mGRdXp9KKR0AYddNxSMIJx4Buf7qj6f/EmAc//yQrlT3tN3O9T2wFGgwu4r6R1VaviY7k5YAI2mInWztd38B9X6obkc84jiAMqHpHvTPtaevZ5OlrmWuAIzQYbJPkkOjm4mtBNmHMJ7eh/fR6W2ugrfqZDteNlQgSn+Mg==";
 
-	unsigned char *sign = calloc(2048,sizeof(unsigned char));
-	unsigned char *sign_base64_encoded = calloc(2048,sizeof(unsigned char));
-	unsigned char *sign_base64_decoded = calloc(2048,sizeof(unsigned char));
-	unsigned char *signed_base64_encoded = calloc(2048,sizeof(unsigned char));
-	unsigned char *signed_base64_decoded = calloc(2048,sizeof(unsigned char));
-	unsigned char *hash_sign = calloc(32,sizeof(unsigned char));
-	unsigned char *hash_message = calloc(32,sizeof(unsigned char));
+    unsigned char *known_message = ",aD¯:°ú°º;lÍÝrïßUT?5Ð$«OnËÃF<' MFH\"Ï¥ì¹ïnÒ%;iøf¾¤]å®gÜÑ§+;««pJ&é& 5ìNJzüøzâ-UD87{@XZ©,kdÐËÿ¢hÜ¯ÛèrÐâauz}(¤t]7 xçûª>üIsÿòB¹SÞÓw;ÔöÀQ Âî+éUjøîNX¦\"u³µÝüÕú¡¹óâÊ¤{Ó>Ö½N¹¸3AÉ>In&´fÂ{zßG¥¶ºß©íxÙP)þ2";													      /* ^^^ We're missing here */
+
+    /*
+	unsigned char *sign = (unsigned char *)calloc(2048,sizeof(unsigned char));
+	unsigned char *sign_base64_encoded = (unsigned char *)calloc(2048,sizeof(unsigned char));
+	unsigned char *sign_base64_decoded = (unsigned char *)calloc(2048,sizeof(unsigned char));
+	unsigned char *signed_base64_encoded = (unsigned char *)calloc(2048,sizeof(unsigned char));
+	unsigned char *signed_base64_decoded = (unsigned char *)calloc(2048,sizeof(unsigned char));
+	unsigned char *hash_message = (unsigned char *)calloc(32,sizeof(unsigned char));
+	*/
+
+    /* Non dynamic so we can use sizeof() operators */
+	unsigned char sign[2048]={'\0'};
+	unsigned char sign_base64_encoded[2048]={'\0'};
+	unsigned char sign_base64_decoded[2048]={'\0'};
+	unsigned char signed_base64_encoded[2048]={'\0'};
+	unsigned char signed_base64_decoded[2048]={'\0'};
+	unsigned char hash_message[32]={'\0'};
 
 	size_t olen = 0, olen_base64 = 0;
 
@@ -573,8 +581,21 @@ int main( int argc, char *argv[] )
 	mbedtls_pk_init( &pk_private );
 	mbedtls_entropy_init( &entropy );
 
+/* Quick Self Test */
+    if( ( ret = mbedtls_sha256_self_test( v ) ) != 0 )
+    {
+    	PRINTF("Sha256 self test failed!\n");
+        return( ret );
+    }
+    if( ( ret = mbedtls_base64_self_test( v ) ) != 0 )
+    {
+    	PRINTF("Base64 self test failed!\n");
+        return( ret );
+    }
+
 /* Testing base64 conversions */
-	if( ( ret = mbedtls_base64_encode( sign_base64_encoded, 2048, &olen,new_message,strlen(new_message)) ) != 0 )	//Isn't this size too big for RSA2048?
+    fflush( stdout );
+	if( ( ret = mbedtls_base64_encode( sign_base64_encoded, 2048, &olen,new_message,strlen(new_message)) ) != 0 )
 	{
 		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
 		return -1;
@@ -582,9 +603,7 @@ int main( int argc, char *argv[] )
 
 
 	PRINTF( "\nRet=%d\nolen=%d\nBase64 Encoded Message:\n%s\n",ret,olen,sign_base64_encoded);
-
 	fflush( stdout );
-
 	if( ( ret = mbedtls_base64_decode( sign_base64_decoded, 2048, &olen,sign_base64_encoded,strlen(sign_base64_encoded)) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
 		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
@@ -593,25 +612,30 @@ int main( int argc, char *argv[] )
 
 	PRINTF( "\nRet=%d\nolen=%d\nBase64 Decoded Message:\n%s\n",ret,olen,sign_base64_decoded);
 
+
 /* Setting Randomness Generator */
-	ret = mbedtls_ctr_drbg_seed( &ctr_drbg , mbedtls_entropy_func, &entropy,
-	                 (const unsigned char *) personalization,
-	                 strlen( personalization ) );
-	if( ret != 0 )
+	fflush( stdout );
+	if( (ret = mbedtls_ctr_drbg_seed( &ctr_drbg , mbedtls_entropy_func, &entropy,(const unsigned char *) personalization,strlen( personalization ) )) != 0 )
 	{
 	    return -1;
 	}
 
 	PRINTF("Message to be signed: %s\n", message);
 
+/***********************************************************************************/
+
+/***********************************************************************************/
+
 /* Loading the keys into pk_ */
+	fflush( stdout );
 	if( ( ret = mbedtls_pk_parse_public_key(&pk_public, public_key,strlen(public_key)+1)) != 0 )
 	{
 		PRINTF( " failed\n  ! mbedtls_pk_parse_public_keyfile (public key) returned -0x%04x\n", -ret );
 		return -1;
 	}
 
-	if( ( ret = mbedtls_pk_parse_key(&pk_private, private_key,strlen(private_key)+1,NULL,42)) != 0 )		/* But what's the question? */
+	fflush( stdout );
+	if( ( ret = mbedtls_pk_parse_key(&pk_private, private_key,strlen(private_key)+1,NULL,0)) != 0 )
 	{
 		PRINTF( " failed\n  ! mbedtls_pk_parse_key (private key) returned -0x%04x\n", -ret );
 		return -1;
@@ -620,54 +644,59 @@ int main( int argc, char *argv[] )
 	PRINTF("Done loading keys!\n");
 
 /* Hashing our message, to be later verified */
-	PRINTF("Start Hashing: \n");
-	mbedtls_sha256_ret(message, strlen(message), hash_message, 0);
-	PRINTF("olen after hashing: %d\n",olen);
-
-/* Signing our message, with no hashing. We want anyone with public key to read contents. */
+	PRINTF("Start Hashing: \nMessage length: %d\n",message_length);
 	fflush( stdout );
+	mbedtls_sha256_ret(message, message_length, hash_message, 0);
+	size_t hash_message_length = sizeof(hash_message);
+	PRINTF("Hashed Message size: %d bytes\nHashed Message: \n",hash_message_length);
+	/* Printing Hash */
+    for(i = 0; i < 32; i++) PRINTF("%02x", hash_message[i]);
+    PRINTF("\n\n");
+
+/* Signing our message. */
 	olen = 0;
-    if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_SHA256, hash_message, 0, sign, &olen,				//SIG LENGTH isn't correct? Should be 256 but is 186
-                         mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
-    {
-    	PRINTF( " failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret );
-        goto exit;
-    }
+	fflush( stdout );
+	if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_SHA256, hash_message, 0, sign, &olen, mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
+	{
+		PRINTF( " failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret );
+		goto exit;
+	}
+	fflush( stdout );
+	PRINTF("Signing (something isn't copying whole message):\n   Ret: %d \n   olen: %d bytes written\n   Sign Length: %d   (This should be 252)\n   Sign Size: %d bytes\n   Message:\n%s",ret,olen, strlen(sign),sizeof(sign));
+		/* Printing Sign */
+	for(i = 0; i < olen; i++) PRINTF("%c", sign[i]);
+    PRINTF("\n\n");
 
-    /*
-     *     if( ( ret = mbedtls_pk_sign( &pk_private, MBEDTLS_MD_NONE , message, strlen(message), sign, &olen,
-                         mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
-    {
-    	PRINTF( " failed\n  ! mbedtls_pk_sign returned -0x%04x\n", (unsigned int) -ret );
-        goto exit;
-    }
-     */
-
-    PRINTF("olen: %d bytes written\nSig Leng: %d\n",olen, strlen(sign));
+/* They key is to use olen, since some of the ascii characters that are output into sign[] can be \0! If we use strlen, we see these characters and terminate early. Wow! */
 
 /* Base64 encoding of signed message */
-    fflush( stdout );
-	if( ( ret = mbedtls_base64_encode( signed_base64_encoded, 2048, &olen,sign,strlen(sign)) ) != 0 )	//Isn't this size too big for RSA2048?
+	PRINTF("\n\nBase64 Encoding:");
+	fflush( stdout );
+	if( ( ret = mbedtls_base64_encode( signed_base64_encoded, 2048, &olen,sign,olen) ) != 0 )
 	{
 		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
 		return -1;
 	}
 
-	PRINTF( "\n\nolen length before base64 = %d\nsign length= %d\nsign Contents: \n%s\n\nBase64 Conversion: \n%s\n\n",olen,strlen(sign),sign,signed_base64_encoded);
+	PRINTF( "\n   olen length after base64 encoding = %d\n   sign length= %d\n   sign Contents: \n%s\n\nBase64 Conversion: \n%s\n\nKnown Output: \n%s\n\nLength of Encoded:%d\nLength of Known: %d\n\n",olen,strlen(sign),sign,signed_base64_encoded,test_message,strlen(signed_base64_encoded),strlen(test_message));
+
 
 /* Base64 decoding for later verification */
 	fflush( stdout );
-	if( ( ret = mbedtls_base64_decode( signed_base64_decoded, 2048, &olen,signed_base64_encoded,strlen(signed_base64_encoded)) ) != 0 )	//Isn't this size too big for RSA2048?
+	if( ( ret = mbedtls_base64_decode( signed_base64_decoded, 2048, &olen,test_message,olen) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
 		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_decode returned -0x%04x\n", olen,-ret );
 		return -1;
 	}
 
-	PRINTF("Decoded string: \n%s\n",signed_base64_decoded);
+	PRINTF("Decoded string: \n");
+	for(i = 0; i < olen; i++) PRINTF("%c", sign[i]);
+    PRINTF("\n\n");
 
-/* Verification using our public key */			//mbedtls_pk_verify_ext
+/* Verification using our public key */
+	PRINTF("Verifying string: \n");
 	fflush( stdout );
-	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_SHA256,hash_message,0,signed_base64_decoded,strlen(signed_base64_decoded)) ) != 0 )	//Isn't this size too big for RSA2048?
+	if( ( ret = mbedtls_pk_verify( &pk_public,MBEDTLS_MD_SHA256,hash_message,0,signed_base64_encoded,olen) ) != 0 )	//Isn't this size too big for RSA2048?
 	{
 		PRINTF( " \nfailed\nOlen = %d\nHash Length: %d\nSig Length: %d\n\nmbedtls_pk_verify returned -0x%04x\n", olen,strlen(hash_message),strlen(signed_base64_decoded),-ret );
 		return -1;
@@ -681,7 +710,6 @@ exit:
 	free(sign_base64_decoded);
 	free(signed_base64_encoded);
 	free(signed_base64_decoded);
-	free(hash_sign);
 	free(hash_message);
 
 	mbedtls_ctr_drbg_free(&ctr_drbg);
@@ -693,37 +721,3 @@ exit:
 }
 
 #endif /* MBEDTLS_TIMING_C */
-
-	/* Ben's spooky code graveyard, because he's a hoarder */
-
-/*	if( ( ret = mbedtls_pk_encrypt( &pk_public, message, strlen(message),
-									sign, &olen, sizeof(sign),
-									mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
-	{
-		PRINTF( " failed\n  ! mbedtls_pk_encrypt returned -0x%04x\n", -ret );
-		return -1;
-	}*/
-/* Base64 conversion of binary encrypted string */
-/*	if( ( ret = mbedtls_base64_encode( encrypt_base64, 2048,&olen_base64,sign,olen) ) != 0 )	//Isn't this size too big for RSA2048?
-	{
-		PRINTF( " \nfailed\nOlen = %d\nmbedtls_base64_encode returned -0x%04x\n", olen,-ret );
-		return -1;
-	}
-
-	PRINTF( "\nRet=%d\nolen_base64=%d\nBase64 Message:\n%s\n",ret,olen_base64,encrypt_base64);*/
-
-/* Decrypting Message! */
-/*
-
-	unsigned char decrypted_message[2048];
-
-	if( ( ret = mbedtls_pk_decrypt( &pk_private, sign, strlen(sign), decrypted_message, &olen, sizeof(decrypted_message),
-	                                mbedtls_ctr_drbg_random, &ctr_drbg ) ) != 0 )
-	{
-	    printf( "failed   mbedtls_pk_decrypt returned -0x%04x\n", -ret );
-	    return -1;
-	}
-
-	PRINTF("Decrypted Message: %s\n",decrypted_message);*/
-
-
