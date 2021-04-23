@@ -34,25 +34,25 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: frdmk64f_mbedtls_benchmark.axf
+all: BTC_Wallet.axf
 
 # Tool invocations
-frdmk64f_mbedtls_benchmark.axf: $(OBJS) $(USER_OBJS)
+BTC_Wallet.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU Linker'
-	arm-none-eabi-gcc -nostdlib -L"C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\frdmk64f_mbedtls_benchmark\mmcau\asm-cm4-cm7" -Xlinker -Map="frdmk64f_mbedtls_benchmark.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -T frdmk64f_mbedtls_benchmark_Debug.ld -o "frdmk64f_mbedtls_benchmark.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-gcc -nostdlib -L"C:\Users\bkute\Documents\MCUXpressoIDE_11.3.0_5222\workspace\frdmk64f_mbedtls_benchmark\mmcau\asm-cm4-cm7" -Xlinker -Map="BTC_Wallet.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -Xlinker --sort-section=alignment -Xlinker --cref -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -T "BTC_Wallet_Debug.ld" -o "BTC_Wallet.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
 
 # Other Targets
 clean:
-	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) frdmk64f_mbedtls_benchmark.axf
+	-$(RM) $(EXECUTABLES)$(OBJS)$(C_DEPS) BTC_Wallet.axf
 	-@echo ' '
 
 post-build:
 	-@echo 'Performing post-build steps'
-	-arm-none-eabi-size "frdmk64f_mbedtls_benchmark.axf"; # arm-none-eabi-objcopy -v -O binary "frdmk64f_mbedtls_benchmark.axf" "frdmk64f_mbedtls_benchmark.bin" ; # checksum -p MK64FN1M0xxx12 -d "frdmk64f_mbedtls_benchmark.bin";
+	-arm-none-eabi-size "BTC_Wallet.axf"; # arm-none-eabi-objcopy -v -O binary "BTC_Wallet.axf" "BTC_Wallet.bin" ; # checksum -p MK64FN1M0xxx12 -d "BTC_Wallet.bin";
 	-@echo ' '
 
 .PHONY: all clean dependents post-build

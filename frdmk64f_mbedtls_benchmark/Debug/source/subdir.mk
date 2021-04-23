@@ -4,16 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../source/benchmark.c \
-../source/semihost_hardfault.c 
+../source/semihost_hardfault.c \
+../source/wallet_main.c 
 
 OBJS += \
-./source/benchmark.o \
-./source/semihost_hardfault.o 
+./source/semihost_hardfault.o \
+./source/wallet_main.o 
 
 C_DEPS += \
-./source/benchmark.d \
-./source/semihost_hardfault.d 
+./source/semihost_hardfault.d \
+./source/wallet_main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
