@@ -1,4 +1,0 @@
-iot_logging_task_dynamic_buffers.c:81:12:xLoggingTaskInitialize	40	static
-iot_logging_task_dynamic_buffers.c:111:13:prvLoggingTask	24	static
-iot_logging_task_dynamic_buffers.c:139:6:vLoggingPrintf	56	static
-iot_logging_task_dynamic_buffers.c:230:6:vLoggingPrint	32	static

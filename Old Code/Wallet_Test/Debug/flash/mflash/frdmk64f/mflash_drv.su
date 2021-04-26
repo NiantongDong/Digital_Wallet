@@ -1,7 +1,0 @@
-mflash_drv.c:19:9:mflash_drv_init	16	static
-mflash_drv.c:32:9:mflash_drv_sector_erase	24	static
-mflash_drv.c:43:16:mflash_drv_sector_program	32	static
-mflash_drv.c:54:9:mflash_drv_page_program	16	static
-mflash_drv.c:60:9:mflash_drv_read	24	static
-mflash_drv.c:67:7:mflash_drv_phys2log	16	static
-mflash_drv.c:74:10:mflash_drv_log2phys	16	static

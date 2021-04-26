@@ -365,7 +365,7 @@ int main( int argc, char *argv[] )
     size_t message_length = strlen(message);
 
     /* Temp BTC transaction from https://medium.com/coinmonks/how-to-create-a-raw-bitcoin-transaction-step-by-step-239b888e87f2 */
-    unsigned char *test_btc_transaction = "0200000000010111b6e0460bb810b05744f8d38262f95fbab02b168b070598a6f31fad438fced4000000001716001427c106013c0042da165c082b3870c31fb3ab4683feffffff0200ca9a3b0000000017a914d8b6fcc85a383261df05423ddf068a8987bf0287873067a3fa0100000017a914d5df0b9ca6c0e1ba60a9ff29359d2600d9c6659d870247304402203b85cb05b43cc68df72e2e54c6cb508aa324a5de0c53f1bbfe997cbd7509774d022041e1b1823bdaddcd6581d7cde6e6a4c4dbef483e42e59e04dbacbaf537c3e3e8012103fbbdb3b3fc3abbbd983b20a557445fb041d6f21cc5977d2121971cb1ce5298978c000000";
+    unsigned char *test_btc_transaction = "0100000002a14d86e95360199262339b9d6186a4a54b399f4c825497117eb9c12f82baaef5000000001f145387d859cbf8f201d95cb69a5d801840172510c1000896cd000000000000fdffffff6edb840a0c7c88474495f4646977f3d538f2b89e38185f4f9b1c84e08f994f49000000001f145387d859cbf8f201d95cb69a5d801840172510c100084487000000000000fdffffff018038010000000000160014982759d43b45cc23d7bc0f5533cf4f08e59b4fed00000000";
 
     unsigned char *test_message = "LGFErzqw+rC6O2zN3RNy79+eVVQ/NdAkq4tPbsvDHEaPPJcnIE1GSAoiEJ7Ppey5727SJRg7CGn4Zr6XBqRd5a6egINn3NGnKzuYnKurgnBKJukmoDXsA05Kevz4egXiLVVEOBg3e0BYWqmILGtk0BvLjv8RomiRktwChwiv25bocoLQ4mGRdXp9KKR0AYddNxSMIJx4Buf7qj6f/EmAc//yQrlT3tN3O9T2wFGgwu4r6R1VaviY7k5YAI2mInWztd38B9X6obkc84jiAMqHpHvTPtaevZ5OlrmWuAIzQYbJPkkOjm4mtBNmHMJ7eh/fR6W2ugrfqZDteNlQgSn+Mg==";
 
@@ -448,6 +448,13 @@ int main( int argc, char *argv[] )
 
 	PRINTF("Done loading keys!\n");
 
+/* Adding Nonce to input message */
+	char * nonce_added_test_btc_transaction = (char*)malloc(strlen(test_btc_transaction)+strlen(nonce));
+	strncpy(nonce_added_test_btc_transaction,test_btc_transaction,strlen(test_btc_transaction));
+	strncat(nonce_added_test_btc_transaction,nonce,4);
+
+	PRINTF("\n\nMessage after nonce added: %s\n", nonce_added_test_btc_transaction);
+
 /* Hashing our message, to be later verified */
 	PRINTF("Start Hashing...\n \nMessage length: %d\n",message_length);
 	fflush( stdout );
@@ -484,7 +491,7 @@ int main( int argc, char *argv[] )
 		return -1;
 	}
 
-	PRINTF("Base64 Encoded Message: \n%s\n",signed_base64_encoded);
+	PRINTF("\nOlen: %d\n\n\nBase64 Encoded Message: \n%s\n",olen, signed_base64_encoded);
 
 /* Base64 decoding for later verification */
 	fflush( stdout );
@@ -494,7 +501,7 @@ int main( int argc, char *argv[] )
 		return -1;
 	}
 
-	PRINTF("\n\nDecoded string... \n\n");
+	PRINTF("\nOlen: %d\n\n\n\nDecoded string... \n\n");
 	PRINTF("Base64 Encoded Message:\n");
 	for(i = 0; i < olen; i++) PRINTF("%c", signed_base64_decoded[i]);
     PRINTF("\n\n");
@@ -512,12 +519,7 @@ int main( int argc, char *argv[] )
 
 exit:
 	/* Freeing Dynamic Arrays */
-	free(sign);
-	free(sign_base64_encoded);
-	free(sign_base64_decoded);
-	free(signed_base64_encoded);
-	free(signed_base64_decoded);
-	free(hash_message);
+	free(nonce_added_test_btc_transaction);
 
 	mbedtls_ctr_drbg_free(&ctr_drbg);
 	mbedtls_entropy_free(&entropy);

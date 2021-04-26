@@ -1,9 +1,0 @@
-core_cm4.h:1809:22:__NVIC_SetPriority	8	static
-core_cm4.h:2017:26:SysTick_Config	16	static
-benchmark.c:193:12:myrand	32	static
-benchmark.c:220:6:ecp_clear_precomputed	24	static
-benchmark.c:247:6:SysTick_Handler	0	static
-benchmark.c:252:17:benchmark_mbedtls_timing_hardclock	40	static
-benchmark.c:268:13:benchmark_mbedtls_set_alarm	32	static
-benchmark.c:274:13:benchmark_mbedtls_poll_alarm	8	static
-benchmark.c:340:5:main	10360	static
