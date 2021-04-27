@@ -431,6 +431,13 @@ int main( int argc, char *argv[] )
 
 	PRINTF("\n\nNonce: %s\n", nonce);
 
+/* Adding Nonce to input message */
+	char * nonce_added_test_btc_transaction = (char*)malloc(strlen(test_btc_transaction)+strlen(nonce));
+	strncpy(nonce_added_test_btc_transaction,test_btc_transaction,strlen(test_btc_transaction));
+	strncat(nonce_added_test_btc_transaction,nonce,strlen(nonce));
+
+	PRINTF("\n\nMessage after nonce added: %s\n", nonce_added_test_btc_transaction);
+
 /* Loading the keys into pk_ */
 	fflush( stdout );
 	if( ( ret = mbedtls_pk_parse_public_key(&pk_public, public_key,strlen(public_key)+1)) != 0 )
@@ -446,14 +453,7 @@ int main( int argc, char *argv[] )
 		goto exit;
 	}
 
-	PRINTF("Done loading keys!\n");
-
-/* Adding Nonce to input message */
-	char * nonce_added_test_btc_transaction = (char*)malloc(strlen(test_btc_transaction)+strlen(nonce));
-	strncpy(nonce_added_test_btc_transaction,test_btc_transaction,strlen(test_btc_transaction));
-	strncat(nonce_added_test_btc_transaction,nonce,4);
-
-	PRINTF("\n\nMessage after nonce added: %s\n", nonce_added_test_btc_transaction);
+	PRINTF("\n\nDone loading keys!\n");
 
 /* Hashing our message, to be later verified */
 	PRINTF("Start Hashing...\n \nMessage length: %d\n",message_length);
@@ -502,7 +502,7 @@ int main( int argc, char *argv[] )
 	}
 
 	PRINTF("\nOlen: %d\n\n\n\nDecoded string... \n\n");
-	PRINTF("Base64 Encoded Message:\n");
+	PRINTF("Base64 Decoded Message:\n");
 	for(i = 0; i < olen; i++) PRINTF("%c", signed_base64_decoded[i]);
     PRINTF("\n\n");
 
