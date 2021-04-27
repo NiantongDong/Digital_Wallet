@@ -31,8 +31,25 @@ Result: We decided to pick the FRDM board, as it has the most secure end-result 
 
 Interfacing with the FRDM board via AWS FreeRTOS. Goal is simple. Prompt the FRDM board for input by providing a plaintext “password”. If the stdin password matches the FRDM’s hardcoded password we stdout a simple “Hello World\n!”.	
 
-3/29/2021: TBD
-4/05/2021: TBD
+3/29/2021:
+
+Plan is somewhat revised. We will be focusing purely on K64F and C. First we need to get the code up and running, and do reserach.
+
+4/05/2021: 
+
+We have found some solid example code through MBEDTLS demos! However it has been very difficult to get the code up and running using any of the AWS demos.
+
+4/12/2021:
+
+Well we got the examples working. We were stuck for a week trying to get the various contexts loaded. There was definitely some backend issue setting up the K64F. Way more stuff to configure than embedded Linux. For now we have the code running on an MBEDTLS demo.
+
+4/19/2021: 
+
+Wow this semester is going by quickly. We're nearly finished. But at the same time, the code is nearly finished! They key was using the &olen variable instead of strlen(some_message)
+
+4/26/2021:
+
+Final week. Time to record the videos, and edit the paper. 
 
 ## Division of Labor
 
