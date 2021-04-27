@@ -4,6 +4,8 @@ The purpose of this project is to design a digital wallet to secure crypto trans
 
 To test, please download the above folder (frdmk64f_mbedtls_benchmark) and open the project in MCUXpresso. Main code is in /source/wallet_main.c.
 
+Please check out YouTube links for higher quality demos.
+
 ## Team Member
 
 - Benjamin Kuter
