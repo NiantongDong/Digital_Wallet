@@ -2,7 +2,7 @@
 
 The purpose of this project is to design a digital wallet to secure crypto transaction. A example from the market is [Ledger](https://www.ledger.com/). We are using FRDM to develop this device through this semester. This repo will be updated regularly to keep track the progress. 
 
-To test, please download the above folder and open the project in MCUXpresso. Main code is in /source/wallet_main.c.
+To test, please download the above folder (frdmk64f_mbedtls_benchmark) and open the project in MCUXpresso. Main code is in /source/wallet_main.c.
 
 ## Team Member
 
