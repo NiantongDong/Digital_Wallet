@@ -51,6 +51,10 @@ Wow this semester is going by quickly. We're nearly finished. But at the same ti
 
 Final week. Time to record the videos, and edit the paper. 
 
+4/28/2021:
+
+Videos and paper uploaded! There's still the chance I'll update something, but this project is essentially finished. 
+
 ## Division of Labor
 
 Physical Security - Ben
